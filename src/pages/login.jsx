@@ -3,11 +3,12 @@ import { loginUser } from "../services/authService";
 import { yupResolver } from "@hookform/resolvers/yup";
 import loginSchema from "../validations/loginSchema";
 import toast from "react-hot-toast";
-import { Link, useNavigate } from "react-router-dom";
+import { useRouter } from "next/router";
 import styles from "./Login.module.css";
+import Link from "next/link";
 
 function Login() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -17,9 +18,12 @@ function Login() {
   const onSubmit = async (data) => {
     try {
       const res = await loginUser(data.username, data.password);
-      localStorage.setItem("auth_token", res.token);
+      console.log(res);
+      document.cookie = `auth_token=${res.token}; path=/; max-age=${
+        7 * 24 * 60 * 60
+      }`;
       toast.success("Login successful!");
-      navigate("/dashboard");
+      router.push("/dashboard");
       console.log("Login successful: ", res);
     } catch (error) {
       if (
@@ -48,21 +52,25 @@ function Login() {
             placeholder="نام کاربری"
             {...register("username")}
           />
-          <div className={styles.error}>{errors.username && <p>{errors.username.message}</p>}</div>
+          <div className={styles.error}>
+            {errors.username && <p>{errors.username.message}</p>}
+          </div>
 
           <input
             type="password"
             placeholder="رمز عبور"
             {...register("password")}
           />
-          <div className={styles.error}>{errors.password && <p>{errors.password.message}</p>}</div>
+          <div className={styles.error}>
+            {errors.password && <p>{errors.password.message}</p>}
+          </div>
 
           <button type="submit" disabled={isSubmitting}>
             {isSubmitting ? "شکیبا باشید ..." : "ورود"}
           </button>
         </form>
         <div className={styles.reglink}>
-          <Link to="/register">ایجاد حساب کاربری</Link>
+          <Link href="/register">ایجاد حساب کاربری</Link>
         </div>
       </div>
     </div>

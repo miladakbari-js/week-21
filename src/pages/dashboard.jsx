@@ -14,6 +14,7 @@ import {
   dashboardReducer,
   initialDashboardState,
 } from "../hooks/dashboardReducer";
+import { useRouter } from "next/router";
 
 function Dashboard() {
   const [searchParams, setSearchParams] = useSearchParams();

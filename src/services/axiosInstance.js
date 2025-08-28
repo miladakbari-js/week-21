@@ -1,9 +1,15 @@
 import axios from "axios";
 
-const api = axios.create({ baseURL: import.meta.env.VITE_BASE_URL });
+function getCookie(name) {
+  const cookies = document.cookie.split("; ");
+  const cookie = cookies.find((c) => c.startsWith(name + "="));
+  return cookie ? cookie.split("=")[1] : null;
+}
+//process.env.NEXT_PUBLIC_BASE_URL
+const api = axios.create({ baseURL: "http://localhost:3000" });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("auth_token");
+  const token = getCookie("auth_token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

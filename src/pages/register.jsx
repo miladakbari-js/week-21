@@ -2,12 +2,14 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import registerSchema from "../validations/registerSchema";
 import { registerUser } from "../services/authService";
-import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import styles from "./Register.module.css";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import Image from "next/image";
 
 function Register() {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const {
     register,
@@ -20,7 +22,7 @@ function Register() {
       const res = await registerUser(data.username, data.password);
       console.log("Register successful:", res);
       toast.success("ثبت نام با موفقیت انجام شد. به صفحه ورود منتقل می شوید!");
-      navigate("/login");
+      router.push("/login");
     } catch (error) {
       if (error.response && error.response.status === 400) {
         toast.error("نام کاربری از قبل وجود دارد!!!");
@@ -35,7 +37,7 @@ function Register() {
 
       <div className={styles.form}>
         <div className={styles.logo}>
-          <img src="./union.svg" alt="logo icon" />
+          <Image src="/union.svg" alt="logo icon" width={100} height={100}/>
           <span>فرم ثبت نام</span>
         </div>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -66,7 +68,7 @@ function Register() {
         </form>
         <div className={styles.loginlink}>
 
-        <Link to="/login" >حساب کاربری دارید؟</Link>
+        <Link href="/login" >حساب کاربری دارید؟</Link>
         </div>
       </div>
     </div>
