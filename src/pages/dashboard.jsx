@@ -6,7 +6,7 @@ import Pagination from "../components/Pagination";
 import styles from "./Dashboard.module.css";
 
 import { useEffect, useReducer } from "react";
-import { useSearchParams } from "react-router-dom";
+
 import useDebounce from "../hooks/useDebounce";
 import { useProducts } from "../hooks/useProducts";
 import { e2p } from "../services/authService";
@@ -14,13 +14,16 @@ import {
   dashboardReducer,
   initialDashboardState,
 } from "../hooks/dashboardReducer";
+
 import { useRouter } from "next/router";
 
 function Dashboard() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const router = useRouter();
+  const {query} = router;
+
   const initial = initialDashboardState({
-    page: Number(searchParams.get("page")) || 1,
-    search: searchParams.get("search") || "",
+    page: Number(query.page) || 1,
+    search: query.search || "",
     limit: 6,
   });
 
@@ -35,12 +38,15 @@ function Dashboard() {
     });
 
   useEffect(() => {
-    const params = {};
-    if (state.currentPage > 1) params.page = state.currentPage;
-    if (state.search) params.search = state.search;
+  const params = {};
+  if (state.currentPage > 1) params.page = state.currentPage;
+  if (state.search) params.search = state.search;
 
-    setSearchParams(params);
-  }, [state.currentPage, state.search, setSearchParams]);
+  router.push({
+    pathname: router.pathname,
+    query: params,
+  });
+}, [state.currentPage, state.search]);
 
   return (
     <div className={styles.container}>
