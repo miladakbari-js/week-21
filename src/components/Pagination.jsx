@@ -1,17 +1,15 @@
 import { e2p } from "../services/authService";
 import styles from "./Pagination.module.css";
 
-function Pagination({ currentPage, data,  setCurrentPage }) {
-
+function Pagination({ currentPage, data, setCurrentPage }) {
   const totalPages = data?.totalPages || 1;
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
     <div className={styles.container}>
       {pages.map((page) => (
-        <div>
+        <div key={page}>
           <button
-            key={page}
             onClick={() => setCurrentPage(page)}
             className={currentPage === page ? styles.active : ""}
           >

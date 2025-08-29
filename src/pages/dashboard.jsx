@@ -6,7 +6,7 @@ import Pagination from "../components/Pagination";
 import styles from "./Dashboard.module.css";
 
 import { useEffect, useReducer } from "react";
-
+import { checkAuth } from "../services/checkAuth";
 import useDebounce from "../hooks/useDebounce";
 import { useProducts } from "../hooks/useProducts";
 import { e2p } from "../services/authService";
@@ -19,7 +19,7 @@ import { useRouter } from "next/router";
 
 function Dashboard() {
   const router = useRouter();
-  const {query} = router;
+  const { query } = router;
 
   const initial = initialDashboardState({
     page: Number(query.page) || 1,
@@ -38,15 +38,15 @@ function Dashboard() {
     });
 
   useEffect(() => {
-  const params = {};
-  if (state.currentPage > 1) params.page = state.currentPage;
-  if (state.search) params.search = state.search;
+    const params = {};
+    if (state.currentPage > 1) params.page = state.currentPage;
+    if (state.search) params.search = state.search;
 
-  router.push({
-    pathname: router.pathname,
-    query: params,
-  });
-}, [state.currentPage, state.search]);
+    router.push({
+      pathname: router.pathname,
+      query: params,
+    });
+  }, [state.currentPage, state.search]);
 
   return (
     <div className={styles.container}>
@@ -174,6 +174,14 @@ function Dashboard() {
             remove.mutate(state.confirmDeleteId, {
               onSuccess: () => {
                 dispatch({ type: "CLOSE_CONFIRM_DELETE" });
+
+                // *********************
+                if (data?.data?.length === 1 && state.currentPage > 1) {
+                  dispatch({
+                    type: "SET_PAGE",
+                    payload: state.currentPage - 1,
+                  });
+                }
               },
             });
           }}
@@ -191,6 +199,17 @@ function Dashboard() {
               onSuccess: () => {
                 dispatch({ type: "CLEAR_SELECTION" });
                 dispatch({ type: "CLOSE_CONFIRM_MULTIPLE" });
+
+                // *********************
+                if (
+                  data?.data?.length === state.selectedProducts.length &&
+                  state.currentPage > 1
+                ) {
+                  dispatch({
+                    type: "SET_PAGE",
+                    payload: state.currentPage - 1,
+                  });
+                }
               },
             })
           }
@@ -200,5 +219,5 @@ function Dashboard() {
     </div>
   );
 }
-
+export const getServerSideProps = checkAuth;
 export default Dashboard;

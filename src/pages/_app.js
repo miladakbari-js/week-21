@@ -6,12 +6,14 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const queryClient = new QueryClient();
 function MyApp({ Component, pageProps }) {
   return (
-    <Layout>
-      <QueryClientProvider client={queryClient}>
-        <Component {...pageProps} />
-        <Toaster position="top-center" />
-      </QueryClientProvider>
-    </Layout>
+    <div dir="rtl">
+      <Layout>
+        <QueryClientProvider client={queryClient}>
+          <Component {...pageProps} />
+          <Toaster position="top-center" />
+        </QueryClientProvider>
+      </Layout>
+    </div>
   );
 }
 
