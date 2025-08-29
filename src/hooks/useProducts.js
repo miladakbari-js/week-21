@@ -10,8 +10,9 @@ export function useProducts({ page, limit, search }) {
     () => getProducts(page, limit, search),
     {
       onError: (err) => {
-        const message = err?.response?.data?.message || err.message || "مشکلی در دریافت محصولات پیش آمد";
+        const message =  "مشکلی در دریافت محصولات پیش آمد";
         toast.error(message);
+        console.log(err?.response?.data?.message || err.message);
       },
     }
   );
